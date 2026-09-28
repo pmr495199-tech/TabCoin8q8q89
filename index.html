@@ -8,15 +8,14 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --accent-gold: #fbbf24;
-            --accent-gold-glow: rgba(251, 191, 36, 0.4);
+            --bg-dark: #121622;
+            --panel-bg: rgba(22, 27, 39, 0.85);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --accent-gold: #f59e0b;
+            --accent-gold-gradient: linear-gradient(135deg, #fbbf24, #d97706);
             --accent-gem: #38bdf8;
-            --accent-gem-glow: rgba(56, 189, 248, 0.4);
             --text-white: #ffffff;
             --text-secondary: #94a3b8;
-            --panel-bg: rgba(15, 23, 42, 0.85);
-            --border-color: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -36,7 +35,7 @@
         }
 
         body {
-            background-image: url('1790244794913.png');
+            background-image: url('1790097907298.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -56,7 +55,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 0;
         }
 
@@ -66,24 +65,67 @@
         }
 
         header {
-            padding: 10px 15px 5px 15px;
+            padding: 12px 16px 6px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .game-title {
-            text-align: center;
-            font-size: 13px;
+        /* Верхня панель профілю як на скріншоті */
+        .top-profile-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .profile-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 6px 14px 6px 6px;
+            border-radius: 30px;
+            backdrop-filter: blur(12px);
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-white);
+            line-height: 1.2;
+        }
+
+        .profile-stage {
+            font-size: 10px;
             font-weight: 600;
-            letter-spacing: 2px;
-            color: var(--text-secondary);
+            color: var(--accent-gold);
             text-transform: uppercase;
-            margin-bottom: 5px;
+            letter-spacing: 0.5px;
         }
 
         .balances-wrapper {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            width: 100%;
+            gap: 8px;
         }
 
         .balance-container {
@@ -91,45 +133,45 @@
             align-items: center;
             gap: 6px;
             background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            padding: 4px 10px;
+            border: 1px solid var(--panel-border);
+            padding: 6px 12px;
             border-radius: 20px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
 
         .coin-icon, .gem-icon {
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .coin-icon {
             background: var(--accent-gold);
-            box-shadow: 0 0 10px var(--accent-gold-glow);
         }
 
         .gem-icon {
             background: var(--accent-gem);
-            box-shadow: 0 0 10px var(--accent-gem-glow);
+        }
+
+        .balance-score-group {
+            display: flex;
+            flex-direction: column;
         }
 
         .balance-score {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 800;
-            letter-spacing: 0.5px;
+            line-height: 1.1;
         }
 
-        .level-badge {
-            text-align: center;
-            font-size: 14px;
-            font-weight: 700;
+        .balance-sub {
+            font-size: 9px;
             color: var(--accent-gold);
-            margin-top: 5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            font-weight: 600;
         }
 
         .tab-content {
@@ -158,69 +200,76 @@
         }
 
         .character-wrapper:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
 
         .character-img {
-            width: 320px;
-            height: 320px;
+            width: 280px;
+            height: 280px;
             object-fit: contain;
-            transform: scale(1.3);
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.7));
             pointer-events: none;
         }
 
+        /* Стиль полоси енергії як на скріншоті */
         .energy-section {
             width: 100%;
-            max-width: 320px;
+            max-width: 340px;
             background: var(--panel-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--panel-border);
             padding: 12px 16px;
             border-radius: 16px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
         .energy-info {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            font-weight: 600;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
             margin-bottom: 8px;
         }
 
         .energy-title {
-            color: var(--accent-gold);
+            color: var(--text-white);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+        }
+
+        .energy-rate {
+            color: var(--accent-gold);
+            font-size: 12px;
         }
 
         .energy-bar-container {
             width: 100%;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
             overflow: hidden;
         }
 
         .energy-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, #f59e0b, #fbbf24);
-            border-radius: 5px;
+            background: var(--accent-gold-gradient);
+            border-radius: 6px;
             width: 100%;
             transition: width 0.2s ease;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
         }
 
         .section-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             margin-bottom: 5px;
-            color: var(--accent-gold);
+            color: var(--text-white);
             align-self: flex-start;
             max-width: 340px;
             margin-left: auto;
             margin-right: auto;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         .items-list {
@@ -228,7 +277,7 @@
             max-width: 340px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             max-height: 55vh;
             overflow-y: auto;
             padding-right: 4px;
@@ -236,41 +285,44 @@
 
         .item-card {
             background: var(--panel-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--panel-border);
             border-radius: 14px;
             padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
 
         .item-info h4 {
-            font-size: 15px;
-            margin-bottom: 4px;
+            font-size: 14px;
+            margin-bottom: 3px;
+            color: var(--text-white);
         }
 
         .item-info p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
         }
 
         .item-btn {
-            background: var(--accent-gold);
-            color: #78350f;
+            background: var(--accent-gold-gradient);
+            color: #1e1b4b;
             border: none;
             padding: 8px 14px;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             transition: opacity 0.2s;
             white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
         }
 
         .item-btn.gem-btn {
-            background: var(--accent-gem);
-            color: #0369a1;
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
         }
 
         .item-btn:active {
@@ -278,8 +330,9 @@
         }
 
         .item-btn:disabled {
-            background: #475569;
+            background: #334155;
             color: #94a3b8;
+            box-shadow: none;
             cursor: not-allowed;
         }
 
@@ -293,19 +346,19 @@
         .roulette-switch-btn {
             flex: 1;
             background: var(--panel-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--panel-border);
             color: var(--text-secondary);
             padding: 8px;
             border-radius: 12px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .roulette-switch-btn.active {
             background: var(--accent-gold);
-            color: #78350f;
+            color: #1e1b4b;
             border-color: var(--accent-gold);
         }
 
@@ -317,10 +370,10 @@
             width: 100%;
             max-width: 340px;
             background: var(--panel-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--panel-border);
             padding: 12px;
             border-radius: 16px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             text-align: center;
         }
 
@@ -330,8 +383,8 @@
 
         .wheel-wrapper {
             position: relative;
-            width: 210px;
-            height: 210px;
+            width: 190px;
+            height: 190px;
         }
 
         .wheel {
@@ -342,21 +395,20 @@
             position: relative;
             transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
             overflow: hidden;
-            box-shadow: 0 0 15px var(--accent-gold-glow);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
         }
 
         .wheel-pointer {
             position: absolute;
-            top: -14px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-top: 18px solid var(--accent-gold);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 16px solid var(--accent-gold);
             z-index: 10;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
         }
 
         .wheel-center {
@@ -364,24 +416,24 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 38px;
-            height: 38px;
+            width: 34px;
+            height: 34px;
             background: var(--accent-gold);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            font-size: 14px;
             z-index: 5;
         }
 
+        /* Нижня панель навігації у стилі Loki */
         nav {
             display: flex;
             justify-content: space-around;
-            background: var(--panel-bg);
-            border-top: 1px solid var(--border-color);
-            padding: 8px 0;
+            background: rgba(18, 22, 34, 0.95);
+            border-top: 1px solid var(--panel-border);
+            padding: 8px 4px 10px 4px;
             backdrop-filter: blur(15px);
         }
 
@@ -389,14 +441,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 3px;
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 500;
             cursor: pointer;
             transition: color 0.2s;
+            flex: 1;
         }
 
         .nav-item.active {
@@ -404,40 +457,51 @@
         }
 
         .nav-icon {
-            font-size: 15px;
+            font-size: 18px;
         }
 
         .click-pop {
             position: absolute;
-            font-weight: bold;
-            font-size: 24px;
+            font-weight: 800;
+            font-size: 22px;
             color: var(--accent-gold);
-            animation: floatUp 0.8s ease-out forwards;
+            animation: floatUp 0.7s ease-out forwards;
             pointer-events: none;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-80px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-70px) scale(1.2); }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="game-title">TabCoin Mining</div>
-        <div class="balances-wrapper">
-            <div class="balance-container">
-                <div class="coin-icon">🪙</div>
-                <div class="balance-score" id="score">0</div>
+        <div class="top-profile-row">
+            <div class="profile-card">
+                <div class="profile-avatar">🐊</div>
+                <div class="profile-info">
+                    <span class="profile-name">Prokop</span>
+                    <span class="profile-stage" id="levelBadge">Stage 1</span>
+                </div>
             </div>
-            <div class="balance-container">
-                <div class="gem-icon">💎</div>
-                <div class="balance-score" id="gems">0</div>
+
+            <div class="balances-wrapper">
+                <div class="balance-container">
+                    <div class="coin-icon">🪙</div>
+                    <div class="balance-score-group">
+                        <div class="balance-score" id="score">0</div>
+                        <div class="balance-sub" id="incomeSub">+3 156/год</div>
+                    </div>
+                </div>
+                <div class="balance-container">
+                    <div class="gem-icon">💎</div>
+                    <div class="balance-score" id="gems">0</div>
+                </div>
             </div>
         </div>
-        <div class="level-badge" id="levelBadge">Рівень 1</div>
     </header>
 
     <div class="tab-content active" id="tab-tap">
@@ -447,8 +511,8 @@
 
         <div class="energy-section">
             <div class="energy-info">
-                <span class="energy-title">⚡ Енергія</span>
-                <span id="energyText">1000 / 1000</span>
+                <span class="energy-title">⚡ <span id="energyText">1000 / 1000</span></span>
+                <span class="energy-rate" id="energyRateText">+3 / сек</span>
             </div>
             <div class="energy-bar-container">
                 <div class="energy-bar-fill" id="energyFill"></div>
@@ -557,7 +621,7 @@
                 <div class="wheel-pointer"></div>
                 <div class="wheel" id="wheelCoin"></div>
             </div>
-            <button class="item-btn" id="spinCoinBtn" onclick="spinCoinWheel()" style="width: 100%; padding: 8px; font-size: 13px;">Крутити (7 000 🪙)</button>
+            <button class="item-btn" id="spinCoinBtn" onclick="spinCoinWheel()" style="width: 100%; padding: 8px; font-size: 12px;">Крутити (7 000 🪙)</button>
         </div>
 
         <div class="roulette-container" id="roulette-gem">
@@ -566,7 +630,7 @@
                 <div class="wheel-pointer"></div>
                 <div class="wheel" id="wheelGem" style="border-color: var(--accent-gem);"></div>
             </div>
-            <button class="item-btn" id="spinGemBtn" onclick="spinGemWheel()" style="width: 100%; padding: 8px; font-size: 13px; background: var(--accent-gem); color: #0369a1;">Крутити (15 💎)</button>
+            <button class="item-btn" id="spinGemBtn" onclick="spinGemWheel()" style="width: 100%; padding: 8px; font-size: 12px; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff;">Крутити (15 💎)</button>
         </div>
     </div>
 
@@ -592,8 +656,8 @@
 
     <nav>
         <button class="nav-item active" onclick="switchTab('tap', this)">
-            <span class="nav-icon">⚡</span>
-            <span>Тап</span>
+            <span class="nav-icon">🏠</span>
+            <span>Дім</span>
         </button>
         <button class="nav-item" onclick="switchTab('boosts', this)">
             <span class="nav-icon">🚀</span>
@@ -622,9 +686,16 @@
     </nav>
 
     <script>
-        // Ініціалізація Telegram WebApp
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        // Безпечна ініціалізація Telegram WebApp
+        let tg = null;
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                tg.expand();
+            }
+        } catch (e) {
+            console.log("Telegram WebApp не ініціалізовано");
+        }
 
         let score = Number(localStorage.getItem('tabcoin_score')) || 0;
         let gems = Number(localStorage.getItem('tabcoin_gems')) || 0;
@@ -662,6 +733,7 @@
         const scoreElement = document.getElementById('score');
         const gemsElement = document.getElementById('gems');
         const energyText = document.getElementById('energyText');
+        const energyRateText = document.getElementById('energyRateText');
         const energyFill = document.getElementById('energyFill');
         const clickArea = document.getElementById('clickArea');
         const levelBadge = document.getElementById('levelBadge');
@@ -697,16 +769,12 @@
         function checkLevelProgression() {
             if (score >= 500000 && level < 5) {
                 level = 5;
-                alert('👑 НЕЙМОВІРНО! Ви досягли 500 000 монет і здобули 5-й абсолютний рівень!');
             } else if (score >= 340000 && score < 500000 && level < 4) {
                 level = 4;
-                alert('🚀 Легендарно! Ви досягли 340 000 монет та перейшли на 4-й рівень!');
             } else if (score >= 170000 && score < 340000 && level < 3) {
                 level = 3;
-                alert('🏆 Неймовірно! Ви досягли 170 000 монет та перейшли на 3-й рівень!');
             } else if (score >= 70000 && score < 170000 && level < 2) {
                 level = 2;
-                alert('🎉 Вітаємо! Ви досягли 70 000 монет та перейшли на 2-й рівень!');
             }
             updateVisuals();
         }
@@ -715,14 +783,15 @@
             scoreElement.textContent = score;
             gemsElement.textContent = gems;
             energyText.textContent = `${Math.floor(energy)} / ${maxEnergy}`;
+            let currentRegen = regenValues[Math.min(regenLevel, regenValues.length - 1)];
+            energyRateText.textContent = `+${currentRegen}/сек`;
             energyFill.style.width = `${(energy / maxEnergy) * 100}%`;
             
             buyMulticlickBtn.textContent = `Купити (${getBoostPrice(multiclickLevel)} 🪙)`;
             buyMaxenergyBtn.textContent = `Купити (${getBoostPrice(maxenergyLevel)} 🪙)`;
 
-            let currentRegen = regenValues[Math.min(regenLevel, regenValues.length - 1)];
             if (regenLevel < regenPrices.length) {
-                regenInfo.textContent = `Відновлення: ${currentRegen}/сек (Наступний: ${regenValues[regenLevel+1]}/сек)`;
+                regenInfo.textContent = `Відновлення: ${currentRegen}/сек`;
                 buyRegenBtn.textContent = `Купити (${regenPrices[regenLevel]} 🪙)`;
                 buyRegenBtn.disabled = false;
             } else {
@@ -731,21 +800,20 @@
                 buyRegenBtn.disabled = true;
             }
 
-            // Зміна лише персонажа залежно від рівня (фон завжди однаковий)
             if (level >= 5) {
-                levelBadge.textContent = 'Рівень 5 👑';
+                levelBadge.textContent = 'Stage 5';
                 characterImg.src = '1790244183576.png';
             } else if (level === 4) {
-                levelBadge.textContent = 'Рівень 4 ⚡';
+                levelBadge.textContent = 'Stage 4';
                 characterImg.src = '1790165750453.png';
             } else if (level === 3) {
-                levelBadge.textContent = 'Рівень 3 🌟';
+                levelBadge.textContent = 'Stage 3';
                 characterImg.src = '1790163627383.png';
             } else if (level === 2) {
-                levelBadge.textContent = 'Рівень 2 👑';
+                levelBadge.textContent = 'Stage 2';
                 characterImg.src = '1790159498394.png';
             } else {
-                levelBadge.textContent = 'Рівень 1';
+                levelBadge.textContent = 'Stage 1';
                 characterImg.src = '1790090929041.png';
             }
         }
@@ -780,13 +848,12 @@
             }
         }
 
-        // Перенаправлення користувача до бота для виклику інвойсу зірок
         function buyGemsInvoice(gemAmount, starsPrice) {
             const botUsername = "tabcoin1_bot"; 
             const payload = `buy_${gemAmount}_gems_${starsPrice}_stars`;
             const invoiceUrl = `https://t.me/${botUsername}?start=${payload}`;
 
-            if (tg.openTelegramLink) {
+            if (tg && tg.openTelegramLink) {
                 tg.openTelegramLink(invoiceUrl);
             } else {
                 window.open(invoiceUrl, '_blank');
@@ -857,7 +924,7 @@
             popup.style.left = `${clientX - rect.left}px`;
             popup.style.top = `${clientY - rect.top}px`;
             clickArea.appendChild(popup);
-            setTimeout(() => popup.remove(), 800);
+            setTimeout(() => popup.remove(), 700);
         }
 
         function switchTab(tabId, element) {

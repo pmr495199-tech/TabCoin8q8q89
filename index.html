@@ -189,7 +189,6 @@
             display: flex;
         }
 
-        /* Повернено великий розмір крокодила */
         .character-wrapper {
             position: relative;
             cursor: pointer;
@@ -212,7 +211,6 @@
             pointer-events: none;
         }
 
-        /* Стиль полоси енергії */
         .energy-section {
             width: 100%;
             max-width: 340px;
@@ -494,7 +492,7 @@
                     <div class="coin-icon">🪙</div>
                     <div class="balance-score-group">
                         <div class="balance-score" id="score">0</div>
-                        <div class="balance-sub" id="incomeSub">+3 156/год</div>
+                        <div class="balance-sub" id="incomeSub">+0/год</div>
                     </div>
                 </div>
                 <div class="balance-container">
@@ -540,10 +538,10 @@
             </div>
             <div class="item-card">
                 <div class="item-info">
-                    <h4>Швидкість відновлення</h4>
-                    <p id="regenInfo">Відновлення: 3/сек</p>
+                    <h4>Пасивний дохід</h4>
+                    <p id="passiveInfo">Дохід: 0/год</p>
                 </div>
-                <button class="item-btn" id="buyRegenBtn" onclick="buyBoost('regen')">Купити</button>
+                <button class="item-btn" id="buyPassiveBtn" onclick="buyBoost('passive')">Купити</button>
             </div>
         </div>
     </div>
@@ -708,10 +706,13 @@
         
         let multiclickLevel = Number(localStorage.getItem('tabcoin_multiLevel')) || 0;
         let maxenergyLevel = Number(localStorage.getItem('tabcoin_energyLevel')) || 0;
-        let regenLevel = Number(localStorage.getItem('tabcoin_regenLevel')) || 0;
+        
+        // Рівень пасивного доходу (0 = новичок, 0 за годину)
+        let passiveLevel = Number(localStorage.getItem('tabcoin_passiveLevel')) || 0;
 
-        const regenValues = [3, 5, 10, 30, 50]; 
-        const regenPrices = [10000, 50000, 70000, 100000];
+        const passiveIncomeRates = [0, 10000, 30000];
+        const passivePrices = [20000, 50000]; // 1-й рівень коштує 20к, 2-й рівень - 50к
+
         const boostPrices = [500, 700, 1000, 2000, 3000, 5000, 7500, 10000];
 
         let taskStarted = localStorage.getItem('tabcoin_taskStarted') === 'true';
@@ -720,18 +721,33 @@
 
         const energyCostPerClick = 5;
 
+        // Перевірка офлайн доходу при запуску
         let lastTime = Number(localStorage.getItem('tabcoin_lastTime')) || Date.now();
         let currentTime = Date.now();
         let elapsedSeconds = Math.floor((currentTime - lastTime) / 1000);
 
+        if (elapsedSeconds > 3) { // якщо минуло більше 3 секунд
+            let currentHourlyIncome = passiveIncomeRates[Math.min(passiveLevel, passiveIncomeRates.length - 1)];
+            if (currentHourlyIncome > 0) {
+                let earnedOffline = Math.floor((elapsedSeconds / 3600) * currentHourlyIncome);
+                if (earnedOffline > 0) {
+                    score += earnedOffline;
+                    setTimeout(() => {
+                        alert(`Поки ви були офлайн, ваш пасивний дохід приніс вам +${earnedOffline.toLocaleString()} 🪙!`);
+                    }, 500);
+                }
+            }
+        }
+
+        // Енергія відновлюється в реальному часі (3 на сек)
         if (elapsedSeconds > 0 && energy < maxEnergy) {
-            let currentRegenRate = regenValues[Math.min(regenLevel, regenValues.length - 1)];
-            let restoredEnergy = elapsedSeconds * currentRegenRate;
+            let restoredEnergy = elapsedSeconds * 3;
             energy = Math.min(maxEnergy, energy + restoredEnergy);
         }
 
         const scoreElement = document.getElementById('score');
         const gemsElement = document.getElementById('gems');
+        const incomeSub = document.getElementById('incomeSub');
         const energyText = document.getElementById('energyText');
         const energyRateText = document.getElementById('energyRateText');
         const energyFill = document.getElementById('energyFill');
@@ -740,8 +756,8 @@
         const characterImg = document.getElementById('characterImg');
         const buyMulticlickBtn = document.getElementById('buyMulticlickBtn');
         const buyMaxenergyBtn = document.getElementById('buyMaxenergyBtn');
-        const buyRegenBtn = document.getElementById('buyRegenBtn');
-        const regenInfo = document.getElementById('regenInfo');
+        const buyPassiveBtn = document.getElementById('buyPassiveBtn');
+        const passiveInfo = document.getElementById('passiveInfo');
 
         function getBoostPrice(boostLevel) {
             if (boostLevel < boostPrices.length) {
@@ -759,7 +775,7 @@
             localStorage.setItem('tabcoin_level', level);
             localStorage.setItem('tabcoin_multiLevel', multiclickLevel);
             localStorage.setItem('tabcoin_energyLevel', maxenergyLevel);
-            localStorage.setItem('tabcoin_regenLevel', regenLevel);
+            localStorage.setItem('tabcoin_passiveLevel', passiveLevel);
             localStorage.setItem('tabcoin_taskStarted', taskStarted);
             localStorage.setItem('tabcoin_tgDone', telegramTaskDone);
             localStorage.setItem('tabcoin_refDone', refTaskDone);
@@ -782,22 +798,30 @@
         function updateVisuals() {
             scoreElement.textContent = score;
             gemsElement.textContent = gems;
+            
+            let currentHourlyIncome = passiveIncomeRates[Math.min(passiveLevel, passiveIncomeRates.length - 1)];
+            incomeSub.textContent = `+${currentHourlyIncome.toLocaleString()}/год`;
+
             energyText.textContent = `${Math.floor(energy)} / ${maxEnergy}`;
-            let currentRegen = regenValues[Math.min(regenLevel, regenValues.length - 1)];
-            energyRateText.textContent = `+${currentRegen}/сек`;
+            energyRateText.textContent = `+3/сек`;
             energyFill.style.width = `${(energy / maxEnergy) * 100}%`;
             
             buyMulticlickBtn.textContent = `Купити (${getBoostPrice(multiclickLevel)} 🪙)`;
             buyMaxenergyBtn.textContent = `Купити (${getBoostPrice(maxenergyLevel)} 🪙)`;
 
-            if (regenLevel < regenPrices.length) {
-                regenInfo.textContent = `Відновлення: ${currentRegen}/сек`;
-                buyRegenBtn.textContent = `Купити (${regenPrices[regenLevel]} 🪙)`;
-                buyRegenBtn.disabled = false;
+            // Оновлення кнопки пасивного доходу
+            if (passiveLevel === 0) {
+                passiveInfo.textContent = `Дохід: 0/год`;
+                buyPassiveBtn.textContent = `Купити (${passivePrices[0].toLocaleString()} 🪙)`;
+                buyPassiveBtn.disabled = false;
+            } else if (passiveLevel === 1) {
+                passiveInfo.textContent = `Дохід: 10 000/год`;
+                buyPassiveBtn.textContent = `Купити (${passivePrices[1].toLocaleString()} 🪙)`;
+                buyPassiveBtn.disabled = false;
             } else {
-                regenInfo.textContent = `Відновлення: ${currentRegen}/сек (Максимум)`;
-                buyRegenBtn.textContent = 'Максимум';
-                buyRegenBtn.disabled = true;
+                passiveInfo.textContent = `Дохід: 30 000/год (Максимум)`;
+                buyPassiveBtn.textContent = 'Максимум';
+                buyPassiveBtn.disabled = true;
             }
 
             if (level >= 5) {
@@ -903,13 +927,21 @@
             saveGame();
         });
 
+        // Інтервал кожну секунду: енергія + пасивний дохід у реальному часі
         setInterval(() => {
             if (energy < maxEnergy) {
-                let currentRegenRate = regenValues[Math.min(regenLevel, regenValues.length - 1)];
-                energy = Math.min(maxEnergy, energy + currentRegenRate);
-                updateVisuals();
-                saveGame();
+                energy = Math.min(maxEnergy, energy + 3);
             }
+            
+            // Нарахування пасивного доходу в реальному часі (розподілене на секунди)
+            let currentHourlyIncome = passiveIncomeRates[Math.min(passiveLevel, passiveIncomeRates.length - 1)];
+            if (currentHourlyIncome > 0) {
+                let incomePerSec = currentHourlyIncome / 3600;
+                score += incomePerSec;
+            }
+
+            updateVisuals();
+            saveGame();
         }, 1000);
 
         window.addEventListener('beforeunload', () => {
@@ -967,17 +999,28 @@
                 } else {
                     alert('Недостатньо монет!');
                 }
-            } else if (type === 'regen') {
-                if (regenLevel < regenPrices.length) {
-                    let cost = regenPrices[regenLevel];
+            } else if (type === 'passive') {
+                if (passiveLevel === 0) {
+                    let cost = passivePrices[0]; // 20 000
                     if (score >= cost) {
                         score -= cost;
-                        regenLevel++;
-                        alert('Швидкість відновлення енергії успішно підвищено!');
+                        passiveLevel = 1;
+                        alert('Пасивний дохід успішно покращено до 10 000 на годину!');
                         checkLevelProgression();
                         saveGame();
                     } else {
-                        alert('Недостатньо монет!');
+                        alert('Недостатньо монет! Потрібно 20 000 🪙');
+                    }
+                } else if (passiveLevel === 1) {
+                    let cost = passivePrices[1]; // 50 000
+                    if (score >= cost) {
+                        score -= cost;
+                        passiveLevel = 2;
+                        alert('Пасивний дохід успішно покращено до 30 000 на годину!');
+                        checkLevelProgression();
+                        saveGame();
+                    } else {
+                        alert('Недостатньо монет! Потрібно 50 000 🪙');
                     }
                 }
             }

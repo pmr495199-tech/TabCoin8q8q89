@@ -55,7 +55,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
             z-index: 0;
         }
 
@@ -71,7 +71,7 @@
             gap: 8px;
         }
 
-        /* Верхня панель профілю як на скріншоті */
+        /* Верхня панель профілю */
         .top-profile-row {
             display: flex;
             align-items: center;
@@ -189,6 +189,7 @@
             display: flex;
         }
 
+        /* Повернено великий розмір крокодила */
         .character-wrapper {
             position: relative;
             cursor: pointer;
@@ -204,14 +205,14 @@
         }
 
         .character-img {
-            width: 280px;
-            height: 280px;
+            width: 330px;
+            height: 330px;
             object-fit: contain;
-            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.7));
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
             pointer-events: none;
         }
 
-        /* Стиль полоси енергії як на скріншоті */
+        /* Стиль полоси енергії */
         .energy-section {
             width: 100%;
             max-width: 340px;
@@ -427,7 +428,7 @@
             z-index: 5;
         }
 
-        /* Нижня панель навігації у стилі Loki */
+        /* Нижня панель навігації */
         nav {
             display: flex;
             justify-content: space-around;
@@ -686,7 +687,6 @@
     </nav>
 
     <script>
-        // Безпечна ініціалізація Telegram WebApp
         let tg = null;
         try {
             if (window.Telegram && window.Telegram.WebApp) {

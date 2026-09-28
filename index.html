@@ -59,13 +59,50 @@
             z-index: 0;
         }
 
-        header, .tab-content, nav {
+        header, .tab-content, nav, .admin-panel {
             position: relative;
             z-index: 1;
         }
 
+        /* Секретна панель розробника для @prokop_gg */
+        .admin-panel {
+            display: none;
+            background: rgba(239, 68, 68, 0.2);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 6px 12px;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-panel.active {
+            display: flex;
+        }
+
+        .admin-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #fca5a5;
+        }
+
+        .admin-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .admin-btn {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         header {
-            padding: 12px 16px 6px 16px;
+            padding: 10px 16px 6px 16px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -477,12 +514,21 @@
 </head>
 <body>
 
+    <!-- Секретна панель розробника (тільки для @prokop_gg) -->
+    <div class="admin-panel" id="adminPanel">
+        <span class="admin-title">👑 Режим розробника (@prokop_gg)</span>
+        <div class="admin-btns">
+            <button class="admin-btn" onclick="adminAddCoins()">+1M Монет</button>
+            <button class="admin-btn" onclick="adminAddGems()">+10k Кристалів</button>
+        </div>
+    </div>
+
     <header>
         <div class="top-profile-row">
             <div class="profile-card">
                 <div class="profile-avatar">🐊</div>
                 <div class="profile-info">
-                    <span class="profile-name">Prokop</span>
+                    <span class="profile-name" id="profileName">Prokop</span>
                     <span class="profile-stage" id="levelBadge">Stage 1</span>
                 </div>
             </div>
@@ -686,13 +732,48 @@
 
     <script>
         let tg = null;
+        let isProkop = false;
+
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 tg = window.Telegram.WebApp;
                 tg.expand();
+                
+                // Перевірка Telegram Username гравця
+                const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
+                if (user && user.username) {
+                    if (user.username.toLowerCase() === 'prokop_gg') {
+                        isProkop = true;
+                    }
+                    if (user.first_name) {
+                        document.getElementById('profileName').textContent = user.first_name;
+                    }
+                }
             }
         } catch (e) {
             console.log("Telegram WebApp не ініціалізовано");
+        }
+
+        // Якщо це @prokop_gg, активуємо секретну панель
+        if (isProkop) {
+            document.getElementById('adminPanel').classList.add('active');
+        }
+
+        function adminAddCoins() {
+            if (!isProkop) return;
+            score += 1000000;
+            checkLevelProgression();
+            updateVisuals();
+            saveGame();
+            alert('👑 Адмін-панель: додано +1 000 000 🪙!');
+        }
+
+        function adminAddGems() {
+            if (!isProkop) return;
+            gems += 10000;
+            updateVisuals();
+            saveGame();
+            alert('👑 Адмін-панель: додано +10 000 💎!');
         }
 
         let score = Number(localStorage.getItem('tabcoin_score')) || 0;
@@ -706,13 +787,10 @@
         
         let multiclickLevel = Number(localStorage.getItem('tabcoin_multiLevel')) || 0;
         let maxenergyLevel = Number(localStorage.getItem('tabcoin_energyLevel')) || 0;
-        
-        // Рівень пасивного доходу (0 = новичок, 0 за годину)
         let passiveLevel = Number(localStorage.getItem('tabcoin_passiveLevel')) || 0;
 
         const passiveIncomeRates = [0, 10000, 30000];
-        const passivePrices = [20000, 50000]; // 1-й рівень коштує 20к, 2-й рівень - 50к
-
+        const passivePrices = [20000, 50000];
         const boostPrices = [500, 700, 1000, 2000, 3000, 5000, 7500, 10000];
 
         let taskStarted = localStorage.getItem('tabcoin_taskStarted') === 'true';
@@ -721,12 +799,11 @@
 
         const energyCostPerClick = 5;
 
-        // Перевірка офлайн доходу при запуску
         let lastTime = Number(localStorage.getItem('tabcoin_lastTime')) || Date.now();
         let currentTime = Date.now();
         let elapsedSeconds = Math.floor((currentTime - lastTime) / 1000);
 
-        if (elapsedSeconds > 3) { // якщо минуло більше 3 секунд
+        if (elapsedSeconds > 3) {
             let currentHourlyIncome = passiveIncomeRates[Math.min(passiveLevel, passiveIncomeRates.length - 1)];
             if (currentHourlyIncome > 0) {
                 let earnedOffline = Math.floor((elapsedSeconds / 3600) * currentHourlyIncome);
@@ -739,7 +816,6 @@
             }
         }
 
-        // Енергія відновлюється в реальному часі (3 на сек)
         if (elapsedSeconds > 0 && energy < maxEnergy) {
             let restoredEnergy = elapsedSeconds * 3;
             energy = Math.min(maxEnergy, energy + restoredEnergy);
@@ -809,7 +885,6 @@
             buyMulticlickBtn.textContent = `Купити (${getBoostPrice(multiclickLevel)} 🪙)`;
             buyMaxenergyBtn.textContent = `Купити (${getBoostPrice(maxenergyLevel)} 🪙)`;
 
-            // Оновлення кнопки пасивного доходу
             if (passiveLevel === 0) {
                 passiveInfo.textContent = `Дохід: 0/год`;
                 buyPassiveBtn.textContent = `Купити (${passivePrices[0].toLocaleString()} 🪙)`;
@@ -927,13 +1002,11 @@
             saveGame();
         });
 
-        // Інтервал кожну секунду: енергія + пасивний дохід у реальному часі
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy = Math.min(maxEnergy, energy + 3);
             }
             
-            // Нарахування пасивного доходу в реальному часі (розподілене на секунди)
             let currentHourlyIncome = passiveIncomeRates[Math.min(passiveLevel, passiveIncomeRates.length - 1)];
             if (currentHourlyIncome > 0) {
                 let incomePerSec = currentHourlyIncome / 3600;
@@ -1001,7 +1074,7 @@
                 }
             } else if (type === 'passive') {
                 if (passiveLevel === 0) {
-                    let cost = passivePrices[0]; // 20 000
+                    let cost = passivePrices[0];
                     if (score >= cost) {
                         score -= cost;
                         passiveLevel = 1;
@@ -1012,7 +1085,7 @@
                         alert('Недостатньо монет! Потрібно 20 000 🪙');
                     }
                 } else if (passiveLevel === 1) {
-                    let cost = passivePrices[1]; // 50 000
+                    let cost = passivePrices[1];
                     if (score >= cost) {
                         score -= cost;
                         passiveLevel = 2;

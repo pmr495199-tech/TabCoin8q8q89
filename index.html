@@ -59,65 +59,9 @@
             z-index: 0;
         }
 
-        header, .tab-content, nav, .admin-panel {
+        header, .tab-content, nav {
             position: relative;
             z-index: 1;
-        }
-
-        /* Секретна панель розробника для @prokop_gg */
-        .admin-panel {
-            display: none;
-            background: rgba(239, 68, 68, 0.25);
-            border-bottom: 1px solid rgba(239, 68, 68, 0.4);
-            padding: 8px 12px;
-            flex-direction: column;
-            gap: 6px;
-            backdrop-filter: blur(10px);
-        }
-
-        .admin-panel.active {
-            display: flex;
-        }
-
-        .admin-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: #fca5a5;
-            text-align: center;
-        }
-
-        .admin-row {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .admin-input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            outline: none;
-        }
-
-        .admin-btn {
-            background: #ef4444;
-            color: #fff;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .admin-btn.reset-btn {
-            background: #64748b;
         }
 
         header {
@@ -533,20 +477,6 @@
 </head>
 <body>
 
-    <!-- Секретна панель розробника для @prokop_gg -->
-    <div class="admin-panel" id="adminPanel">
-        <span class="admin-title">👑 Адмін-панель (@prokop_gg)</span>
-        <div class="admin-row">
-            <input type="number" id="adminCoinsInput" class="admin-input" placeholder="Монети...">
-            <button class="admin-btn" onclick="adminSetCoins()">Встановити 🪙</button>
-        </div>
-        <div class="admin-row">
-            <input type="number" id="adminGemsInput" class="admin-input" placeholder="Кристали...">
-            <button class="admin-btn" onclick="adminSetGems()">Встановити 💎</button>
-            <button class="admin-btn reset-btn" onclick="adminResetBalance()">Скинути 0</button>
-        </div>
-    </div>
-
     <header>
         <div class="top-profile-row">
             <div class="profile-card">
@@ -756,66 +686,29 @@
 
     <script>
         let tg = null;
-        let isProkop = false;
 
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 tg = window.Telegram.WebApp;
                 tg.expand();
                 
-                // Перевірка Telegram Username гравця
                 const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
-                if (user && user.username) {
-                    if (user.username.toLowerCase() === 'prokop_gg') {
-                        isProkop = true;
-                    }
-                    if (user.first_name) {
-                        document.getElementById('profileName').textContent = user.first_name;
-                    }
+                if (user && user.first_name) {
+                    document.getElementById('profileName').textContent = user.first_name;
                 }
             }
         } catch (e) {
             console.log("Telegram WebApp не ініціалізовано");
         }
 
-        // Якщо це @prokop_gg, активуємо секретну панель
-        if (isProkop) {
-            document.getElementById('adminPanel').classList.add('active');
-        }
+        // --- ВЕРСІЯ ГРИ ТА СКИНУТНЯ ПРОГРЕСУ ДЛЯ ВСІХ ГРАВЦІВ ---
+        const CURRENT_GAME_VERSION = "2.0"; // Змініть цю версію, якщо колись знову захочете всім скинути прогрес
+        const savedVersion = localStorage.getItem('tabcoin_version');
 
-        function adminSetCoins() {
-            if (!isProkop) return;
-            const val = Number(document.getElementById('adminCoinsInput').value);
-            if (!isNaN(val)) {
-                score = val;
-                checkLevelProgression();
-                updateVisuals();
-                saveGame();
-                alert(`👑 Монети встановлено на: ${score.toLocaleString()} 🪙`);
-            }
-        }
-
-        function adminSetGems() {
-            if (!isProkop) return;
-            const val = Number(document.getElementById('adminGemsInput').value);
-            if (!isNaN(val)) {
-                gems = val;
-                updateVisuals();
-                saveGame();
-                alert(`👑 Кристали встановлено на: ${gems.toLocaleString()} 💎`);
-            }
-        }
-
-        function adminResetBalance() {
-            if (!isProkop) return;
-            score = 0;
-            gems = 0;
-            document.getElementById('adminCoinsInput').value = '';
-            document.getElementById('adminGemsInput').value = '';
-            checkLevelProgression();
-            updateVisuals();
-            saveGame();
-            alert('👑 Баланс успішно скинуто до 0!');
+        if (savedVersion !== CURRENT_GAME_VERSION) {
+            // Очищаємо весь збережений прогрес та встановлюємо нову версію
+            localStorage.clear();
+            localStorage.setItem('tabcoin_version', CURRENT_GAME_VERSION);
         }
 
         let score = Number(localStorage.getItem('tabcoin_score')) || 0;

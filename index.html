@@ -17,7 +17,6 @@
             --text-white: #ffffff;
             --text-secondary: #94a3b8;
             
-            /* Болотяно-зелена палітра для кнопок */
             --swamp-btn-bg: linear-gradient(135deg, #556B2F, #3F501F);
             --swamp-btn-hover: linear-gradient(135deg, #4A5D27, #344219);
             --swamp-btn-border: #6B8E23;
@@ -153,13 +152,8 @@
             font-size: 12px;
         }
 
-        .coin-icon {
-            background: var(--accent-gold);
-        }
-
-        .gem-icon {
-            background: var(--accent-gem);
-        }
+        .coin-icon { background: var(--accent-gold); }
+        .gem-icon { background: var(--accent-gem); }
 
         .balance-score-group {
             display: flex;
@@ -317,20 +311,9 @@
             object-fit: contain;
         }
 
-        .item-info {
-            flex: 1;
-        }
-
-        .item-info h4 {
-            font-size: 13px;
-            margin-bottom: 2px;
-            color: var(--text-white);
-        }
-
-        .item-info p {
-            font-size: 10px;
-            color: var(--text-secondary);
-        }
+        .item-info { flex: 1; }
+        .item-info h4 { font-size: 13px; margin-bottom: 2px; color: var(--text-white); }
+        .item-info p { font-size: 10px; color: var(--text-secondary); }
 
         .item-actions {
             display: flex;
@@ -353,28 +336,14 @@
             box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
         }
 
-        .item-btn:hover {
-            background: var(--swamp-btn-hover);
-        }
-
+        .item-btn:hover { background: var(--swamp-btn-hover); }
         .item-btn.secondary-btn {
             background: #334155;
             border-color: rgba(255, 255, 255, 0.1);
             color: var(--text-white);
             box-shadow: none;
         }
-
-        .item-btn.gem-btn {
-            background: var(--swamp-btn-bg);
-            border-color: var(--swamp-btn-border);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
-        }
-
-        .item-btn:active {
-            opacity: 0.8;
-        }
-
+        .item-btn:active { opacity: 0.8; }
         .item-btn:disabled {
             background: #334155;
             border-color: transparent;
@@ -424,9 +393,7 @@
             text-align: center;
         }
 
-        .roulette-container.active {
-            display: flex;
-        }
+        .roulette-container.active { display: flex; }
 
         .wheel-wrapper {
             position: relative;
@@ -587,9 +554,7 @@
             text-align: center;
         }
 
-        .mg-btn:active {
-            opacity: 0.7;
-        }
+        .mg-btn:active { opacity: 0.7; }
 
         .mg-start-screen {
             position: absolute;
@@ -634,13 +599,8 @@
             min-width: 45px;
         }
 
-        .nav-item.active {
-            color: #6B8E23;
-        }
-
-        .nav-icon {
-            font-size: 16px;
-        }
+        .nav-item.active { color: #6B8E23; }
+        .nav-icon { font-size: 16px; }
 
         .click-pop {
             position: absolute;
@@ -761,7 +721,7 @@
                 
                 <div class="mg-start-screen" id="mgStartScreen">
                     <h3 style="font-size: 16px; color: var(--accent-gold);">Збирай скарби!</h3>
-                    <p style="font-size: 11px; color: var(--text-secondary);">Керуй крокодилом стрілками. Лови монети та кристали, уникай бомб!</p>
+                    <p style="font-size: 11px; color: var(--text-secondary);">Керуй крокодилом кнопками нижче. Лови монети та кристали, уникай бомб!</p>
                     <button class="item-btn" onclick="startMiniGame()" style="padding: 10px 20px; font-size: 12px;">Почати гру</button>
                 </div>
             </div>
@@ -920,12 +880,10 @@
 
     <script>
         let tg = null;
-
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 tg = window.Telegram.WebApp;
                 tg.expand();
-                
                 const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
                 if (user && user.first_name) {
                     document.getElementById('profileName').textContent = user.first_name;
@@ -955,8 +913,16 @@
             { name: "Автомийка", incomes: [0, 1500, 3500, 7000, 14000, 30000], costs: [0, 70000, 180000, 450000, 1200000] }
         ];
 
-        let bizLevels = JSON.parse(localStorage.getItem('tabcoin_bizLevels')) || [0, 0, 0];
-        let bizBalances = JSON.parse(localStorage.getItem('tabcoin_bizBalances')) || [0, 0, 0];
+        let bizLevels = [0, 0, 0];
+        let bizBalances = [0, 0, 0];
+        try {
+            let savedBizLvl = localStorage.getItem('tabcoin_bizLevels');
+            if (savedBizLvl) bizLevels = JSON.parse(savedBizLvl);
+            let savedBizBal = localStorage.getItem('tabcoin_bizBalances');
+            if (savedBizBal) bizBalances = JSON.parse(savedBizBal);
+        } catch(err) {
+            console.log("Помилка зчитування бізнесів");
+        }
 
         const energyRegenRates = [3, 6, 10, 15, 25];
         const regenPrices = [1000, 3000, 8000, 15000];
@@ -964,13 +930,10 @@
 
         let taskStarted = localStorage.getItem('tabcoin_taskStarted') === 'true';
         let telegramTaskDone = localStorage.getItem('tabcoin_tgDone') === 'true';
-
         const energyCostPerClick = 5;
 
         let lastTime = Number(localStorage.getItem('tabcoin_lastTime')) || Date.now();
-        let currentTime = Date.now();
-        let elapsedSeconds = Math.floor((currentTime - lastTime) / 1000);
-
+        let elapsedSeconds = Math.floor((Date.now() - lastTime) / 1000);
         let currentRegenRate = energyRegenRates[Math.min(regenLevel, energyRegenRates.length - 1)];
 
         if (elapsedSeconds > 3) {
@@ -992,8 +955,7 @@
         }
 
         if (elapsedSeconds > 0 && energy < maxEnergy) {
-            let restoredEnergy = elapsedSeconds * currentRegenRate;
-            energy = Math.min(maxEnergy, energy + restoredEnergy);
+            energy = Math.min(maxEnergy, energy + (elapsedSeconds * currentRegenRate));
         }
 
         const scoreElement = document.getElementById('score');
@@ -1011,9 +973,7 @@
         const regenInfo = document.getElementById('regenInfo');
 
         function getBoostPrice(boostLevel) {
-            if (boostLevel < boostPrices.length) {
-                return boostPrices[boostLevel];
-            }
+            if (boostLevel < boostPrices.length) return boostPrices[boostLevel];
             return boostPrices[boostPrices.length - 1] + (boostLevel - boostPrices.length + 1) * 5000;
         }
 
@@ -1035,15 +995,11 @@
         }
 
         function checkLevelProgression() {
-            if (score >= 500000 && level < 5) {
-                level = 5;
-            } else if (score >= 340000 && score < 500000 && level < 4) {
-                level = 4;
-            } else if (score >= 170000 && score < 340000 && level < 3) {
-                level = 3;
-            } else if (score >= 70000 && score < 170000 && level < 2) {
-                level = 2;
-            }
+            if (score >= 500000) level = 5;
+            else if (score >= 340000) level = 4;
+            else if (score >= 170000) level = 3;
+            else if (score >= 70000) level = 2;
+            else level = 1;
             updateVisuals();
         }
 
@@ -1054,9 +1010,7 @@
             let totalHourlyIncome = 0;
             for(let i = 0; i < businessConfigs.length; i++) {
                 let lvl = bizLevels[i];
-                if(lvl > 0) {
-                    totalHourlyIncome += businessConfigs[i].incomes[lvl];
-                }
+                if(lvl > 0) totalHourlyIncome += businessConfigs[i].incomes[lvl];
             }
             incomeSub.textContent = `+${totalHourlyIncome.toLocaleString()}/год`;
 
@@ -1093,39 +1047,25 @@
                 infoEl.textContent = `Дохід: ${currentInc.toLocaleString()} 🪙/год | Каса: ${currentBox.toLocaleString()} 🪙`;
 
                 if(lvl < 5) {
-                    let nextCost = businessConfigs[i].costs[lvl + 1];
-                    upBtn.textContent = `Купити (${nextCost.toLocaleString()} 🪙)`;
+                    upBtn.textContent = `Купити (${businessConfigs[i].costs[lvl + 1].toLocaleString()} 🪙)`;
                     upBtn.disabled = false;
                 } else {
                     upBtn.textContent = `Максимум`;
                     upBtn.disabled = true;
                 }
-
                 claimBtn.disabled = (currentBox <= 0);
             }
 
-            if (level >= 5) {
-                levelBadge.textContent = 'Stage 5';
-                characterImg.src = '1790166306471.png';
-            } else if (level === 4) {
-                levelBadge.textContent = 'Stage 4';
-                characterImg.src = '1790165750453.png';
-            } else if (level === 3) {
-                levelBadge.textContent = 'Stage 3';
-                characterImg.src = '1790163627383.png';
-            } else if (level === 2) {
-                levelBadge.textContent = 'Stage 2';
-                characterImg.src = '1790159498394.png';
-            } else {
-                levelBadge.textContent = 'Stage 1';
-                characterImg.src = '1790090929041.png';
-            }
+            if (level >= 5) { levelBadge.textContent = 'Stage 5'; characterImg.src = '1790166306471.png'; }
+            else if (level === 4) { levelBadge.textContent = 'Stage 4'; characterImg.src = '1790165750453.png'; }
+            else if (level === 3) { levelBadge.textContent = 'Stage 3'; characterImg.src = '1790163627383.png'; }
+            else if (level === 2) { levelBadge.textContent = 'Stage 2'; characterImg.src = '1790159498394.png'; }
+            else { levelBadge.textContent = 'Stage 1'; characterImg.src = '1790090929041.png'; }
         }
 
         function upgradeBusiness(index) {
             let currentLvl = bizLevels[index];
             if (currentLvl >= 5) return;
-
             let cost = businessConfigs[index].costs[currentLvl + 1];
             if (score >= cost) {
                 score -= cost;
@@ -1151,17 +1091,12 @@
 
         function buyGemsInvoice(gemAmount, starsPrice) {
             const botUsername = "tabcoin1_bot"; 
-            const payload = `buy_${gemAmount}_gems_${starsPrice}_stars`;
-            const invoiceUrl = `https://t.me/${botUsername}?start=${payload}`;
-
-            if (tg && tg.openTelegramLink) {
-                tg.openTelegramLink(invoiceUrl);
-            } else {
-                window.open(invoiceUrl, '_blank');
-            }
+            const invoiceUrl = `https://t.me/${botUsername}?start=buy_${gemAmount}_gems_${starsPrice}_stars`;
+            if (tg && tg.openTelegramLink) tg.openTelegramLink(invoiceUrl);
+            else window.open(invoiceUrl, '_blank');
         }
 
-        updateVisuals();
+        checkLevelProgression();
 
         if (telegramTaskDone) {
             const subBtn = document.getElementById('subBtn');
@@ -1179,8 +1114,7 @@
                 if (energy >= energyCostPerClick) {
                     score += clickPower;
                     energy -= energyCostPerClick;
-                    let touch = e.changedTouches[i];
-                    showFloatingTextAt(touch.clientX, touch.clientY);
+                    showFloatingTextAt(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
                 }
             }
             checkLevelProgression();
@@ -1198,25 +1132,15 @@
         });
 
         setInterval(() => {
-            if (energy < maxEnergy) {
-                energy = Math.min(maxEnergy, energy + currentRegenRate);
-            }
-            
+            if (energy < maxEnergy) energy = Math.min(maxEnergy, energy + currentRegenRate);
             for (let i = 0; i < businessConfigs.length; i++) {
-                let lvl = bizLevels[i];
-                if (lvl > 0) {
-                    let hourlyInc = businessConfigs[i].incomes[lvl];
-                    bizBalances[i] += (hourlyInc / 3600);
-                }
+                if (bizLevels[i] > 0) bizBalances[i] += (businessConfigs[i].incomes[bizLevels[i]] / 3600);
             }
-
             updateVisuals();
             saveGame();
         }, 1000);
 
-        window.addEventListener('beforeunload', () => {
-            saveGame();
-        });
+        window.addEventListener('beforeunload', () => saveGame());
 
         function showFloatingTextAt(clientX, clientY) {
             const rect = clickArea.getBoundingClientRect();
@@ -1253,9 +1177,7 @@
                     alert('Буст кліка успішно куплено!');
                     checkLevelProgression();
                     saveGame();
-                } else {
-                    alert('Недостатньо монет!');
-                }
+                } else alert('Недостатньо монет!');
             } else if (type === 'maxenergy') {
                 let cost = getBoostPrice(maxenergyLevel);
                 if (score >= cost) {
@@ -1266,9 +1188,7 @@
                     alert('Максимум енергії збільшено!');
                     checkLevelProgression();
                     saveGame();
-                } else {
-                    alert('Недостатньо монет!');
-                }
+                } else alert('Недостатньо монет!');
             } else if (type === 'regen') {
                 if (regenLevel < regenPrices.length) {
                     let cost = regenPrices[regenLevel];
@@ -1279,9 +1199,7 @@
                         alert('Швидкість відновлення енергії успішно покращено!');
                         checkLevelProgression();
                         saveGame();
-                    } else {
-                        alert(`Недостатньо монет! Потрібно ${cost.toLocaleString()} 🪙`);
-                    }
+                    } else alert(`Недостатньо монет! Потрібно ${cost.toLocaleString()} 🪙`);
                 }
             }
         }
@@ -1318,23 +1236,27 @@
         let mgCrocX = 135; 
         let mgInterval = null;
         let mgSpawnInterval = null;
+        let mgGameLoopInterval = null;
         let fallingItems = [];
 
         function moveCroc(dir) {
             if (!mgActive) return;
-            const containerWidth = document.getElementById('mgCanvas').clientWidth;
-            const step = 30;
+            const container = document.getElementById('mgCanvas');
+            if (!container) return;
+            const containerWidth = container.clientWidth;
+            const step = 35;
             if (dir === 'left') {
                 mgCrocX = Math.max(0, mgCrocX - step);
             } else {
                 mgCrocX = Math.min(containerWidth - 60, mgCrocX + step);
             }
-            document.getElementById('mgCroc').style.left = `${mgCrocX}px`;
+            const crocEl = document.getElementById('mgCroc');
+            if (crocEl) crocEl.style.left = `${mgCrocX}px`;
         }
 
         function startMiniGame() {
             const startScreen = document.getElementById('mgStartScreen');
-            startScreen.style.display = 'none';
+            if (startScreen) startScreen.style.display = 'none';
             
             mgActive = true;
             mgTimerVal = 60;
@@ -1342,16 +1264,24 @@
             mgCrystalsVal = 0;
             mgBombsVal = 0;
             mgCrocX = 135;
-            document.getElementById('mgCroc').style.left = `${mgCrocX}px`;
+            
+            const crocEl = document.getElementById('mgCroc');
+            if (crocEl) crocEl.style.left = `${mgCrocX}px`;
+            
             document.getElementById('mgTimer').textContent = mgTimerVal;
             document.getElementById('mgScore').textContent = mgScoreVal;
 
             document.querySelectorAll('.mg-item').forEach(el => el.remove());
             fallingItems = [];
 
+            if (mgInterval) clearInterval(mgInterval);
+            if (mgSpawnInterval) clearInterval(mgSpawnInterval);
+            if (mgGameLoopInterval) clearInterval(mgGameLoopInterval);
+
             mgInterval = setInterval(() => {
                 mgTimerVal--;
-                document.getElementById('mgTimer').textContent = mgTimerVal;
+                const timerEl = document.getElementById('mgTimer');
+                if (timerEl) timerEl.textContent = mgTimerVal;
 
                 if (mgTimerVal <= 0) {
                     endMiniGame();
@@ -1360,28 +1290,66 @@
 
             mgSpawnInterval = setInterval(() => {
                 if (mgActive) spawnItem();
-            }, 400);
+            }, 600);
+
+            mgGameLoopInterval = setInterval(() => {
+                if (!mgActive) return;
+                const container = document.getElementById('mgCanvas');
+                if (!container) return;
+                const containerHeight = container.clientHeight;
+                
+                for (let i = fallingItems.length - 1; i >= 0; i--) {
+                    let item = fallingItems[i];
+                    item.y += 4;
+                    item.el.style.top = `${item.y}px`;
+
+                    if (item.y >= containerHeight - 65 && item.y <= containerHeight - 15) {
+                        if (item.x + 25 >= mgCrocX && item.x <= mgCrocX + 50) {
+                            if (item.type === 'coin') {
+                                mgScoreVal += item.value;
+                            } else if (item.type === 'gem') {
+                                mgCrystalsVal += item.value;
+                            } else if (item.type === 'bomb') {
+                                mgBombsVal += 1;
+                                mgScoreVal = Math.max(0, mgScoreVal - 500);
+                            }
+                            const scoreEl = document.getElementById('mgScore');
+                            if (scoreEl) scoreEl.textContent = mgScoreVal;
+                            
+                            item.el.remove();
+                            fallingItems.splice(i, 1);
+                            continue;
+                        }
+                    }
+
+                    if (item.y > containerHeight) {
+                        item.el.remove();
+                        fallingItems.splice(i, 1);
+                    }
+                }
+            }, 30);
         }
 
         function spawnItem() {
             const container = document.getElementById('mgCanvas');
+            if (!container) return;
             const containerWidth = container.clientWidth;
             const x = Math.random() * (containerWidth - 30);
             
             const randType = Math.random();
             let type, value, icon;
 
-            if (randType < 0.12) {
+            if (randType < 0.15) {
                 type = 'gem';
-                value = Math.floor(Math.random() * 3) + 1;
+                value = 1;
                 icon = '💎';
             } else if (randType < 0.35) {
                 type = 'bomb';
-                value = Math.floor(Math.random() * 1500) + 200;
+                value = 500;
                 icon = '💣';
             } else {
                 type = 'coin';
-                const coinVariants = [10, 50, 100, 500, 1000, 3000];
+                const coinVariants = [10, 50, 100, 300];
                 value = coinVariants[Math.floor(Math.random() * coinVariants.length)];
                 icon = '🪙';
             }
@@ -1396,43 +1364,11 @@
             fallingItems.push({ el, x, y: 0, type, value });
         }
 
-        setInterval(() => {
-            if (!mgActive) return;
-            const containerHeight = document.getElementById('mgCanvas').clientHeight;
-            
-            for (let i = fallingItems.length - 1; i >= 0; i--) {
-                let item = fallingItems[i];
-                item.y += 6;
-                item.el.style.top = `${item.y}px`;
-
-                if (item.y >= containerHeight - 65 && item.y <= containerHeight - 15) {
-                    if (item.x + 25 >= mgCrocX && item.x <= mgCrocX + 50) {
-                        if (item.type === 'coin') {
-                            mgScoreVal += item.value;
-                        } else if (item.type === 'gem') {
-                            mgCrystalsVal += item.value;
-                        } else if (item.type === 'bomb') {
-                            mgBombsVal += 1;
-                            mgScoreVal = Math.max(0, mgScoreVal - item.value);
-                        }
-                        document.getElementById('mgScore').textContent = mgScoreVal;
-                        item.el.remove();
-                        fallingItems.splice(i, 1);
-                        continue;
-                    }
-                }
-
-                if (item.y > containerHeight) {
-                    item.el.remove();
-                    fallingItems.splice(i, 1);
-                }
-            }
-        }, 30);
-
         function endMiniGame() {
             mgActive = false;
-            clearInterval(mgInterval);
-            clearInterval(mgSpawnInterval);
+            if (mgInterval) clearInterval(mgInterval);
+            if (mgSpawnInterval) clearInterval(mgSpawnInterval);
+            if (mgGameLoopInterval) clearInterval(mgGameLoopInterval);
 
             score += mgScoreVal;
             gems += mgCrystalsVal;
@@ -1441,16 +1377,18 @@
             saveGame();
 
             const startScreen = document.getElementById('mgStartScreen');
-            startScreen.style.display = 'flex';
-            startScreen.innerHTML = `
-                <h3 style="font-size: 18px; color: var(--accent-gold); margin-bottom: 5px;">Гра закінчена! 🎉</h3>
-                <div style="font-size: 13px; text-align: left; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 10px; width: 100%; max-width: 260px; line-height: 1.6;">
-                    <p>🪙 Ви заробили: <b>+${mgScoreVal.toLocaleString()}</b> монет</p>
-                    <p>💎 Кристалів: <b>+${mgCrystalsVal}</b></p>
-                    <p>💣 І зловили бомб: <b>${mgBombsVal}</b></p>
-                </div>
-                <button class="item-btn" onclick="startMiniGame()" style="padding: 10px 20px; font-size: 12px; margin-top: 5px;">Зіграти знову</button>
-            `;
+            if (startScreen) {
+                startScreen.style.display = 'flex';
+                startScreen.innerHTML = `
+                    <h3 style="font-size: 18px; color: var(--accent-gold); margin-bottom: 5px;">Гра закінчена! 🎉</h3>
+                    <div style="font-size: 13px; text-align: left; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 10px; width: 100%; max-width: 260px; line-height: 1.6;">
+                        <p>🪙 Ви заробили: <b>+${mgScoreVal.toLocaleString()}</b> монет</p>
+                        <p>💎 Кристалів: <b>+${mgCrystalsVal}</b></p>
+                        <p>💣 І зловили бомб: <b>${mgBombsVal}</b></p>
+                    </div>
+                    <button class="item-btn" onclick="startMiniGame()" style="padding: 10px 20px; font-size: 12px; margin-top: 5px;">Зіграти знову</button>
+                `;
+            }
 
             document.querySelectorAll('.mg-item').forEach(el => el.remove());
             fallingItems = [];
@@ -1484,7 +1422,6 @@
         function getWeightedRandomIndex(prizes) {
             const totalWeight = prizes.reduce((sum, item) => sum + item.chance, 0);
             let randomNum = Math.random() * totalWeight;
-            
             for (let i = 0; i < prizes.length; i++) {
                 if (randomNum < prizes[i].chance) return i;
                 randomNum -= prizes[i].chance;
@@ -1505,7 +1442,7 @@
             saveGame();
 
             const spinBtn = document.getElementById('spinCoinBtn');
-            spinBtn.disabled = true;
+            if (spinBtn) spinBtn.disabled = true;
 
             const prizeIndex = getWeightedRandomIndex(coinRoulettePrizes);
             const totalItems = coinRoulettePrizes.length;
@@ -1514,21 +1451,18 @@
             const targetSectorCenter = prizeIndex * angleStep + angleStep / 2;
             const extraSpins = 360 * 7;
             const currentMod = coinRotation % 360;
-            const targetRotation = coinRotation + extraSpins + (360 - currentMod) + (360 - targetSectorCenter);
+            coinRotation += extraSpins + (360 - currentMod) + (360 - targetSectorCenter);
             
-            coinRotation = targetRotation;
             document.getElementById('wheelCoin').style.transform = `rotate(${coinRotation}deg)`;
 
             setTimeout(() => {
                 const wonCoins = coinRoulettePrizes[prizeIndex].coins;
-                const wonGems = coinRoulettePrizes[prizeIndex].gems;
                 score += wonCoins;
-                gems += wonGems;
-                alert(`Вітаємо! Ви виграли ${wonCoins} 🪙!`);
+                alert(`Вітаємо! Ви виграли ${wonCoins.toLocaleString()} 🪙!`);
                 checkLevelProgression();
                 updateVisuals();
                 saveGame();
-                spinBtn.disabled = false;
+                if (spinBtn) spinBtn.disabled = false;
             }, 4000);
         }
 
@@ -1545,7 +1479,7 @@
             saveGame();
 
             const spinBtn = document.getElementById('spinGemBtn');
-            spinBtn.disabled = true;
+            if (spinBtn) spinBtn.disabled = true;
 
             const prizeIndex = getWeightedRandomIndex(gemRoulettePrizes);
             const totalItems = gemRoulettePrizes.length;
@@ -1554,21 +1488,18 @@
             const targetSectorCenter = prizeIndex * angleStep + angleStep / 2;
             const extraSpins = 360 * 7;
             const currentMod = gemRotation % 360;
-            const targetRotation = gemRotation + extraSpins + (360 - currentMod) + (360 - targetSectorCenter);
+            gemRotation += extraSpins + (360 - currentMod) + (360 - targetSectorCenter);
             
-            gemRotation = targetRotation;
             document.getElementById('wheelGem').style.transform = `rotate(${gemRotation}deg)`;
 
             setTimeout(() => {
-                const wonCoins = gemRoulettePrizes[prizeIndex].coins;
                 const wonGems = gemRoulettePrizes[prizeIndex].gems;
-                score += wonCoins;
                 gems += wonGems;
                 alert(`Вітаємо! Ви виграли ${wonGems} 💎!`);
                 checkLevelProgression();
                 updateVisuals();
                 saveGame();
-                spinBtn.disabled = false;
+                if (spinBtn) spinBtn.disabled = false;
             }, 4000);
         }
     </script>

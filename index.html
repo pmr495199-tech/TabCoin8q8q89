@@ -702,11 +702,10 @@
         }
 
         // --- ВЕРСІЯ ГРИ ТА СКИНУТНЯ ПРОГРЕСУ ДЛЯ ВСІХ ГРАВЦІВ ---
-        const CURRENT_GAME_VERSION = "2.0"; // Змініть цю версію, якщо колись знову захочете всім скинути прогрес
+        const CURRENT_GAME_VERSION = "2.0"; 
         const savedVersion = localStorage.getItem('tabcoin_version');
 
         if (savedVersion !== CURRENT_GAME_VERSION) {
-            // Очищаємо весь збережений прогрес та встановлюємо нову версію
             localStorage.clear();
             localStorage.setItem('tabcoin_version', CURRENT_GAME_VERSION);
         }
@@ -714,8 +713,10 @@
         let score = Number(localStorage.getItem('tabcoin_score')) || 0;
         let gems = Number(localStorage.getItem('tabcoin_gems')) || 0;
         let maxEnergy = Number(localStorage.getItem('tabcoin_maxEnergy')) || 1000;
-        let energy = Number(localStorage.getItem('tabcoin_energy'));
-        if (isNaN(energy)) energy = maxEnergy;
+        
+        // Виправлення енергії для нових гравців (щоб не була 0)
+        let savedEnergy = localStorage.getItem('tabcoin_energy');
+        let energy = savedEnergy !== null ? Number(savedEnergy) : maxEnergy;
         
         let clickPower = Number(localStorage.getItem('tabcoin_clickPower')) || 1;
         let level = Number(localStorage.getItem('tabcoin_level')) || 1;

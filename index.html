@@ -16,6 +16,11 @@
             --accent-gem: #38bdf8;
             --text-white: #ffffff;
             --text-secondary: #94a3b8;
+            
+            /* Болотяно-зелена палітра для кнопок */
+            --swamp-btn-bg: linear-gradient(135deg, #556B2F, #3F501F);
+            --swamp-btn-hover: linear-gradient(135deg, #4A5D27, #344219);
+            --swamp-btn-border: #6B8E23;
         }
 
         * {
@@ -334,30 +339,37 @@
             align-items: flex-end;
         }
 
+        /* Замінено на болотяно-зелений дизайн кнопок */
         .item-btn {
-            background: var(--accent-gold-gradient);
-            color: #1e1b4b;
-            border: none;
+            background: var(--swamp-btn-bg);
+            color: #ffffff;
+            border: 1px solid var(--swamp-btn-border);
             padding: 6px 10px;
             border-radius: 8px;
             font-weight: 700;
             font-size: 10px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
+        }
+
+        .item-btn:hover {
+            background: var(--swamp-btn-hover);
         }
 
         .item-btn.secondary-btn {
             background: #334155;
+            border-color: rgba(255, 255, 255, 0.1);
             color: var(--text-white);
             box-shadow: none;
         }
 
         .item-btn.gem-btn {
-            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            background: var(--swamp-btn-bg);
+            border-color: var(--swamp-btn-border);
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
         }
 
         .item-btn:active {
@@ -366,6 +378,7 @@
 
         .item-btn:disabled {
             background: #334155;
+            border-color: transparent;
             color: #94a3b8;
             box-shadow: none;
             cursor: not-allowed;
@@ -392,9 +405,9 @@
         }
 
         .roulette-switch-btn.active {
-            background: var(--accent-gold);
-            color: #1e1b4b;
-            border-color: var(--accent-gold);
+            background: #556B2F;
+            color: #ffffff;
+            border-color: #6B8E23;
         }
 
         .roulette-container {
@@ -426,12 +439,11 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 4px solid var(--accent-gold);
+            border: 4px solid #6B8E23;
             position: relative;
             transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-            /* Надійне стабільне фонове колесо для будь-яких пристроїв */
+            box-shadow: 0 0 15px rgba(107, 142, 35, 0.4);
             background: conic-gradient(
                 #1e293b 0deg 60deg,
                 #334155 60deg 120deg,
@@ -451,7 +463,7 @@
             height: 0;
             border-left: 8px solid transparent;
             border-right: 8px solid transparent;
-            border-top: 16px solid var(--accent-gold);
+            border-top: 16px solid #6B8E23;
             z-index: 10;
         }
 
@@ -462,13 +474,14 @@
             transform: translate(-50%, -50%);
             width: 34px;
             height: 34px;
-            background: var(--accent-gold);
+            background: #556B2F;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             z-index: 5;
+            border: 1px solid #6B8E23;
         }
 
         .wheel-labels {
@@ -492,7 +505,6 @@
             padding-top: 15px;
         }
 
-        /* Розподіл текстів на 6 секторів */
         .w-l-1 { transform: rotate(30deg); }
         .w-l-2 { transform: rotate(90deg); }
         .w-l-3 { transform: rotate(150deg); }
@@ -527,7 +539,7 @@
         }
 
         .nav-item.active {
-            color: var(--accent-gold);
+            color: #6B8E23;
         }
 
         .nav-icon {
@@ -538,7 +550,7 @@
             position: absolute;
             font-weight: 800;
             font-size: 22px;
-            color: var(--accent-gold);
+            color: #6B8E23;
             animation: floatUp 0.7s ease-out forwards;
             pointer-events: none;
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
@@ -726,7 +738,6 @@
         </div>
     </div>
 
-    <!-- Вкладка Рулетки з універсальним відображенням -->
     <div class="tab-content" id="tab-roulette">
         <div class="section-title">Колесо Фортуни</div>
         
@@ -758,7 +769,7 @@
             <p style="font-size: 11px; color: var(--text-secondary);">Ціна прокрутки: 15 💎</p>
             <div class="wheel-wrapper">
                 <div class="wheel-pointer"></div>
-                <div class="wheel" id="wheelGem" style="border-color: var(--accent-gem);">
+                <div class="wheel" id="wheelGem" style="border-color: #6B8E23;">
                     <div class="wheel-labels">
                         <div class="wheel-label w-l-1">30 💎</div>
                         <div class="wheel-label w-l-2">25 💎</div>
@@ -770,7 +781,7 @@
                 </div>
                 <div class="wheel-center">💎</div>
             </div>
-            <button class="item-btn" id="spinGemBtn" onclick="spinGemWheel()" style="width: 100%; padding: 8px; font-size: 12px; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff;">Крутити (15 💎)</button>
+            <button class="item-btn" id="spinGemBtn" onclick="spinGemWheel()" style="width: 100%; padding: 8px; font-size: 12px;">Крутити (15 💎)</button>
         </div>
     </div>
 

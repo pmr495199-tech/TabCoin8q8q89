@@ -291,6 +291,11 @@
             align-items: center;
             justify-content: space-between;
             backdrop-filter: blur(12px);
+            gap: 8px;
+        }
+
+        .item-info {
+            flex: 1;
         }
 
         .item-info h4 {
@@ -304,18 +309,31 @@
             color: var(--text-secondary);
         }
 
+        .item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-end;
+        }
+
         .item-btn {
             background: var(--accent-gold-gradient);
             color: #1e1b4b;
             border: none;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             transition: opacity 0.2s;
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .item-btn.secondary-btn {
+            background: #334155;
+            color: var(--text-white);
+            box-shadow: none;
         }
 
         .item-btn.gem-btn {
@@ -432,23 +450,25 @@
             justify-content: space-around;
             background: rgba(18, 22, 34, 0.95);
             border-top: 1px solid var(--panel-border);
-            padding: 8px 4px 10px 4px;
+            padding: 8px 2px 10px 2px;
             backdrop-filter: blur(15px);
+            overflow-x: auto;
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 2px;
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 500;
             cursor: pointer;
             transition: color 0.2s;
             flex: 1;
+            min-width: 45px;
         }
 
         .nav-item.active {
@@ -456,7 +476,7 @@
         }
 
         .nav-icon {
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .click-pop {
@@ -519,6 +539,46 @@
         </div>
     </div>
 
+    <!-- Нова вкладка Бізнесів -->
+    <div class="tab-content" id="tab-biz">
+        <div class="section-title">Ваші Бізнеси</div>
+        <div class="items-list">
+            <!-- Бізнес 1: Ферма -->
+            <div class="item-card">
+                <div class="item-info">
+                    <h4 id="biz0Name">Ферма (Рівень 0)</h4>
+                    <p id="biz0Info">Дохід: 0 🪙/год | Каса: 0 🪙</p>
+                </div>
+                <div class="item-actions">
+                    <button class="item-btn" id="biz0UpgradeBtn" onclick="upgradeBusiness(0)">Покращити</button>
+                    <button class="item-btn secondary-btn" id="biz0ClaimBtn" onclick="claimBusiness(0)">Зняти</button>
+                </div>
+            </div>
+            <!-- Бізнес 2: Продуктовий магазин -->
+            <div class="item-card">
+                <div class="item-info">
+                    <h4 id="biz1Name">Продуктовий магазин (Рівень 0)</h4>
+                    <p id="biz1Info">Дохід: 0 🪙/год | Каса: 0 🪙</p>
+                </div>
+                <div class="item-actions">
+                    <button class="item-btn" id="biz1UpgradeBtn" onclick="upgradeBusiness(1)">Покращити</button>
+                    <button class="item-btn secondary-btn" id="biz1ClaimBtn" onclick="claimBusiness(1)">Зняти</button>
+                </div>
+            </div>
+            <!-- Бізнес 3: Автомийка -->
+            <div class="item-card">
+                <div class="item-info">
+                    <h4 id="biz2Name">Автомийка (Рівень 0)</h4>
+                    <p id="biz2Info">Дохід: 0 🪙/год | Каса: 0 🪙</p>
+                </div>
+                <div class="item-actions">
+                    <button class="item-btn" id="biz2UpgradeBtn" onclick="upgradeBusiness(2)">Покращити</button>
+                    <button class="item-btn secondary-btn" id="biz2ClaimBtn" onclick="claimBusiness(2)">Зняти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="tab-content" id="tab-boosts">
         <div class="section-title">Покращення</div>
         <div class="items-list">
@@ -542,13 +602,6 @@
                     <p id="regenInfo">Відновлення: +3/сек</p>
                 </div>
                 <button class="item-btn" id="buyRegenBtn" onclick="buyBoost('regen')">Купити</button>
-            </div>
-            <div class="item-card">
-                <div class="item-info">
-                    <h4>Пасивний дохід</h4>
-                    <p id="passiveInfo">Дохід: 0/год</p>
-                </div>
-                <button class="item-btn" id="buyPassiveBtn" onclick="buyBoost('passive')">Купити</button>
             </div>
         </div>
     </div>
@@ -665,6 +718,10 @@
             <span class="nav-icon">🏠</span>
             <span>Дім</span>
         </button>
+        <button class="nav-item" onclick="switchTab('biz', this)">
+            <span class="nav-icon">🏪</span>
+            <span>Бізнеси</span>
+        </button>
         <button class="nav-item" onclick="switchTab('boosts', this)">
             <span class="nav-icon">🚀</span>
             <span>Бусти</span>
@@ -721,13 +778,19 @@
         let multiclickLevel = Number(localStorage.getItem('tabcoin_multiLevel')) || 0;
         let maxenergyLevel = Number(localStorage.getItem('tabcoin_energyLevel')) || 0;
         let regenLevel = Number(localStorage.getItem('tabcoin_regenLevel')) || 0;
-        let passiveLevel = Number(localStorage.getItem('tabcoin_passiveLevel')) || 0;
+
+        // Конфігурація бізнесів (3 бізнеси, по 5 рівнів)
+        const businessConfigs = [
+            { name: "Ферма", incomes: [0, 500, 1200, 2500, 5000, 10000], costs: [0, 20000, 60000, 150000, 400000] },
+            { name: "Продуктовий магазин", incomes: [0, 800, 1800, 3500, 7000, 15000], costs: [0, 35000, 90000, 220000, 600000] },
+            { name: "Автомийка", incomes: [0, 1500, 3500, 7000, 14000, 30000], costs: [0, 70000, 180000, 450000, 1200000] }
+        ];
+
+        let bizLevels = JSON.parse(localStorage.getItem('tabcoin_bizLevels')) || [0, 0, 0];
+        let bizBalances = JSON.parse(localStorage.getItem('tabcoin_bizBalances')) || [0, 0, 0];
 
         const energyRegenRates = [3, 6, 10, 15, 25];
         const regenPrices = [1000, 3000, 8000, 15000];
-
-        const passiveIncomeRates = [0, 10000, 30000];
-        const passivePrices = [20000, 50000];
         const boostPrices = [500, 700, 1000, 2000, 3000, 5000, 7500, 10000];
 
         let taskStarted = localStorage.getItem('tabcoin_taskStarted') === 'true';
@@ -742,16 +805,22 @@
 
         let currentRegenRate = energyRegenRates[Math.min(regenLevel, energyRegenRates.length - 1)];
 
+        // Офлайн нарахування годинного доходу для бізнесів
         if (elapsedSeconds > 3) {
-            let currentHourlyIncome = passiveIncomeRates[Math.min(passiveLevel, passiveIncomeRates.length - 1)];
-            if (currentHourlyIncome > 0) {
-                let earnedOffline = Math.floor((elapsedSeconds / 3600) * currentHourlyIncome);
-                if (earnedOffline > 0) {
-                    score += earnedOffline;
-                    setTimeout(() => {
-                        alert(`Поки ви були офлайн, ваш пасивний дохід приніс вам +${earnedOffline.toLocaleString()} 🪙!`);
-                    }, 500);
+            let totalEarnedOffline = 0;
+            for (let i = 0; i < businessConfigs.length; i++) {
+                let lvl = bizLevels[i];
+                if (lvl > 0) {
+                    let hourlyInc = businessConfigs[i].incomes[lvl];
+                    let earned = Math.floor((elapsedSeconds / 3600) * hourlyInc);
+                    bizBalances[i] += earned;
+                    totalEarnedOffline += earned;
                 }
+            }
+            if (totalEarnedOffline > 0) {
+                setTimeout(() => {
+                    alert(`Поки ви були офлайн, ваші бізнеси прибили у касу загалом +${totalEarnedOffline.toLocaleString()} 🪙!`);
+                }, 500);
             }
         }
 
@@ -773,8 +842,6 @@
         const buyMaxenergyBtn = document.getElementById('buyMaxenergyBtn');
         const buyRegenBtn = document.getElementById('buyRegenBtn');
         const regenInfo = document.getElementById('regenInfo');
-        const buyPassiveBtn = document.getElementById('buyPassiveBtn');
-        const passiveInfo = document.getElementById('passiveInfo');
 
         function getBoostPrice(boostLevel) {
             if (boostLevel < boostPrices.length) {
@@ -793,7 +860,8 @@
             localStorage.setItem('tabcoin_multiLevel', multiclickLevel);
             localStorage.setItem('tabcoin_energyLevel', maxenergyLevel);
             localStorage.setItem('tabcoin_regenLevel', regenLevel);
-            localStorage.setItem('tabcoin_passiveLevel', passiveLevel);
+            localStorage.setItem('tabcoin_bizLevels', JSON.stringify(bizLevels));
+            localStorage.setItem('tabcoin_bizBalances', JSON.stringify(bizBalances));
             localStorage.setItem('tabcoin_taskStarted', taskStarted);
             localStorage.setItem('tabcoin_tgDone', telegramTaskDone);
             localStorage.setItem('tabcoin_refDone', refTaskDone);
@@ -817,8 +885,15 @@
             scoreElement.textContent = Math.floor(score);
             gemsElement.textContent = gems;
             
-            let currentHourlyIncome = passiveIncomeRates[Math.min(passiveLevel, passiveIncomeRates.length - 1)];
-            incomeSub.textContent = `+${currentHourlyIncome.toLocaleString()}/год`;
+            // Загальний годинний дохід з усіх бізнесів
+            let totalHourlyIncome = 0;
+            for(let i = 0; i < businessConfigs.length; i++) {
+                let lvl = bizLevels[i];
+                if(lvl > 0) {
+                    totalHourlyIncome += businessConfigs[i].incomes[lvl];
+                }
+            }
+            incomeSub.textContent = `+${totalHourlyIncome.toLocaleString()}/год`;
 
             currentRegenRate = energyRegenRates[Math.min(regenLevel, energyRegenRates.length - 1)];
 
@@ -839,18 +914,30 @@
                 buyRegenBtn.disabled = true;
             }
 
-            if (passiveLevel === 0) {
-                passiveInfo.textContent = `Дохід: 0/год`;
-                buyPassiveBtn.textContent = `Купити (${passivePrices[0].toLocaleString()} 🪙)`;
-                buyPassiveBtn.disabled = false;
-            } else if (passiveLevel === 1) {
-                passiveInfo.textContent = `Дохід: 10 000/год`;
-                buyPassiveBtn.textContent = `Купити (${passivePrices[1].toLocaleString()} 🪙)`;
-                buyPassiveBtn.disabled = false;
-            } else {
-                passiveInfo.textContent = `Дохід: 30 000/год (Максимум)`;
-                buyPassiveBtn.textContent = 'Максимум';
-                buyPassiveBtn.disabled = true;
+            // Оновлення блоків бізнесів в інтерфейсі
+            for(let i = 0; i < businessConfigs.length; i++) {
+                let lvl = bizLevels[i];
+                let nameEl = document.getElementById(`biz${i}Name`);
+                let infoEl = document.getElementById(`biz${i}Info`);
+                let upBtn = document.getElementById(`biz${i}UpgradeBtn`);
+                let claimBtn = document.getElementById(`biz${i}ClaimBtn`);
+
+                let currentInc = businessConfigs[i].incomes[lvl];
+                let currentBox = Math.floor(bizBalances[i]);
+
+                nameEl.textContent = `${businessConfigs[i].name} (Рівень ${lvl}/5)`;
+                infoEl.textContent = `Дохід: ${currentInc.toLocaleString()} 🪙/год | Каса: ${currentBox.toLocaleString()} 🪙`;
+
+                if(lvl < 5) {
+                    let nextCost = businessConfigs[i].costs[lvl + 1];
+                    upBtn.textContent = `Купити (${nextCost.toLocaleString()} 🪙)`;
+                    upBtn.disabled = false;
+                } else {
+                    upBtn.textContent = `Максимум`;
+                    upBtn.disabled = true;
+                }
+
+                claimBtn.disabled = (currentBox <= 0);
             }
 
             if (level >= 5) {
@@ -868,6 +955,34 @@
             } else {
                 levelBadge.textContent = 'Stage 1';
                 characterImg.src = '1790090929041.png';
+            }
+        }
+
+        // Функції для купівлі та збору з бізнесів
+        function upgradeBusiness(index) {
+            let currentLvl = bizLevels[index];
+            if (currentLvl >= 5) return;
+
+            let cost = businessConfigs[index].costs[currentLvl + 1];
+            if (score >= cost) {
+                score -= cost;
+                bizLevels[index]++;
+                updateVisuals();
+                saveGame();
+                alert(`Ви успішно покращили "${businessConfigs[index].name}" до рівня ${bizLevels[index]}!`);
+            } else {
+                alert(`Недостатньо монет! Потрібно ${cost.toLocaleString()} 🪙`);
+            }
+        }
+
+        function claimBusiness(index) {
+            let amount = Math.floor(bizBalances[index]);
+            if (amount > 0) {
+                score += amount;
+                bizBalances[index] = 0;
+                updateVisuals();
+                saveGame();
+                alert(`З каси бізнесу забрано +${amount.toLocaleString()} 🪙!`);
             }
         }
 
@@ -956,15 +1071,19 @@
             saveGame();
         });
 
+        // Інтервал кожну секунду (відновлення енергії + додавання прибутку бізнесів у касу)
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy = Math.min(maxEnergy, energy + currentRegenRate);
             }
             
-            let currentHourlyIncome = passiveIncomeRates[Math.min(passiveLevel, passiveIncomeRates.length - 1)];
-            if (currentHourlyIncome > 0) {
-                let incomePerSec = currentHourlyIncome / 3600;
-                score += incomePerSec;
+            // Нарахування коштів у касу бізнесів щосекунди (годинний дохід ділимо на 3600)
+            for (let i = 0; i < businessConfigs.length; i++) {
+                let lvl = bizLevels[i];
+                if (lvl > 0) {
+                    let hourlyInc = businessConfigs[i].incomes[lvl];
+                    bizBalances[i] += (hourlyInc / 3600);
+                }
             }
 
             updateVisuals();
@@ -1038,30 +1157,6 @@
                         saveGame();
                     } else {
                         alert(`Недостатньо монет! Потрібно ${cost.toLocaleString()} 🪙`);
-                    }
-                }
-            } else if (type === 'passive') {
-                if (passiveLevel === 0) {
-                    let cost = passivePrices[0];
-                    if (score >= cost) {
-                        score -= cost;
-                        passiveLevel = 1;
-                        alert('Пасивний дохід успішно покращено до 10 000 на годину!');
-                        checkLevelProgression();
-                        saveGame();
-                    } else {
-                        alert('Недостатньо монет! Потрібно 20 000 🪙');
-                    }
-                } else if (passiveLevel === 1) {
-                    let cost = passivePrices[1];
-                    if (score >= cost) {
-                        score -= cost;
-                        passiveLevel = 2;
-                        alert('Пасивний дохід успішно покращено до 30 000 на годину!');
-                        checkLevelProgression();
-                        saveGame();
-                    } else {
-                        alert('Недостатньо монет! Потрібно 50 000 🪙');
                     }
                 }
             }

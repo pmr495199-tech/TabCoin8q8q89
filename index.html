@@ -71,7 +71,6 @@
             gap: 8px;
         }
 
-        /* Верхня панель профілю */
         .top-profile-row {
             display: flex;
             align-items: center;
@@ -294,7 +293,6 @@
             gap: 10px;
         }
 
-        /* Стилі для іконки бізнесу */
         .biz-icon-wrapper {
             width: 44px;
             height: 44px;
@@ -433,6 +431,15 @@
             transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
             overflow: hidden;
             box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            /* Надійне стабільне фонове колесо для будь-яких пристроїв */
+            background: conic-gradient(
+                #1e293b 0deg 60deg,
+                #334155 60deg 120deg,
+                #1e293b 120deg 180deg,
+                #334155 180deg 240deg,
+                #1e293b 240deg 300deg,
+                #334155 300deg 360deg
+            );
         }
 
         .wheel-pointer {
@@ -464,7 +471,35 @@
             z-index: 5;
         }
 
-        /* Нижня панель навігації */
+        .wheel-labels {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .wheel-label {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 1px 2px #000;
+            padding-top: 15px;
+        }
+
+        /* Розподіл текстів на 6 секторів */
+        .w-l-1 { transform: rotate(30deg); }
+        .w-l-2 { transform: rotate(90deg); }
+        .w-l-3 { transform: rotate(150deg); }
+        .w-l-4 { transform: rotate(210deg); }
+        .w-l-5 { transform: rotate(270deg); }
+        .w-l-6 { transform: rotate(330deg); }
+
         nav {
             display: flex;
             justify-content: space-around;
@@ -559,11 +594,9 @@
         </div>
     </div>
 
-    <!-- Вкладка Бізнесів із власними картинками -->
     <div class="tab-content" id="tab-biz">
         <div class="section-title">Ваші Бізнеси</div>
         <div class="items-list">
-            <!-- Бізнес 1: Ферма -->
             <div class="item-card">
                 <div class="biz-icon-wrapper">
                     <img src="png-transparent-paper-barn-farm-live-architectural-engineering-barn-angle-ribbon-building.png" alt="Ферма" class="biz-icon">
@@ -577,7 +610,6 @@
                     <button class="item-btn secondary-btn" id="biz0ClaimBtn" onclick="claimBusiness(0)">Зняти</button>
                 </div>
             </div>
-            <!-- Бізнес 2: Супермаркет -->
             <div class="item-card">
                 <div class="biz-icon-wrapper">
                     <img src="pngtree-supermarket-clipart-cartoon-grocery-store-with-fruits-and-vegetables-vector-png-image_6825233.png" alt="Супермаркет" class="biz-icon">
@@ -591,7 +623,6 @@
                     <button class="item-btn secondary-btn" id="biz1ClaimBtn" onclick="claimBusiness(1)">Зняти</button>
                 </div>
             </div>
-            <!-- Бізнес 3: Автомийка -->
             <div class="item-card">
                 <div class="biz-icon-wrapper">
                     <img src="depositphotos_9136118-stock-illustration-car-wash.png" alt="Автомийка" class="biz-icon">
@@ -695,6 +726,7 @@
         </div>
     </div>
 
+    <!-- Вкладка Рулетки з універсальним відображенням -->
     <div class="tab-content" id="tab-roulette">
         <div class="section-title">Колесо Фортуни</div>
         
@@ -707,7 +739,17 @@
             <p style="font-size: 11px; color: var(--text-secondary);">Ціна прокрутки: 7 000 🪙</p>
             <div class="wheel-wrapper">
                 <div class="wheel-pointer"></div>
-                <div class="wheel" id="wheelCoin"></div>
+                <div class="wheel" id="wheelCoin">
+                    <div class="wheel-labels">
+                        <div class="wheel-label w-l-1">30k 🪙</div>
+                        <div class="wheel-label w-l-2">25k 🪙</div>
+                        <div class="wheel-label w-l-3">20k 🪙</div>
+                        <div class="wheel-label w-l-4">15k 🪙</div>
+                        <div class="wheel-label w-l-5">10k 🪙</div>
+                        <div class="wheel-label w-l-6">7k 🪙</div>
+                    </div>
+                </div>
+                <div class="wheel-center">🪙</div>
             </div>
             <button class="item-btn" id="spinCoinBtn" onclick="spinCoinWheel()" style="width: 100%; padding: 8px; font-size: 12px;">Крутити (7 000 🪙)</button>
         </div>
@@ -716,7 +758,17 @@
             <p style="font-size: 11px; color: var(--text-secondary);">Ціна прокрутки: 15 💎</p>
             <div class="wheel-wrapper">
                 <div class="wheel-pointer"></div>
-                <div class="wheel" id="wheelGem" style="border-color: var(--accent-gem);"></div>
+                <div class="wheel" id="wheelGem" style="border-color: var(--accent-gem);">
+                    <div class="wheel-labels">
+                        <div class="wheel-label w-l-1">30 💎</div>
+                        <div class="wheel-label w-l-2">25 💎</div>
+                        <div class="wheel-label w-l-3">20 💎</div>
+                        <div class="wheel-label w-l-4">15 💎</div>
+                        <div class="wheel-label w-l-5">10 💎</div>
+                        <div class="wheel-label w-l-6">5 💎</div>
+                    </div>
+                </div>
+                <div class="wheel-center">💎</div>
             </div>
             <button class="item-btn" id="spinGemBtn" onclick="spinGemWheel()" style="width: 100%; padding: 8px; font-size: 12px; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff;">Крутити (15 💎)</button>
         </div>
@@ -808,7 +860,6 @@
         let maxenergyLevel = Number(localStorage.getItem('tabcoin_energyLevel')) || 0;
         let regenLevel = Number(localStorage.getItem('tabcoin_regenLevel')) || 0;
 
-        // Конфігурація бізнесів
         const businessConfigs = [
             { name: "Ферма", incomes: [0, 500, 1200, 2500, 5000, 10000], costs: [0, 20000, 60000, 150000, 400000] },
             { name: "Супермаркет", incomes: [0, 800, 1800, 3500, 7000, 15000], costs: [0, 35000, 90000, 220000, 600000] },
@@ -834,7 +885,6 @@
 
         let currentRegenRate = energyRegenRates[Math.min(regenLevel, energyRegenRates.length - 1)];
 
-        // Офлайн нарахування годинного доходу для бізнесів
         if (elapsedSeconds > 3) {
             let totalEarnedOffline = 0;
             for (let i = 0; i < businessConfigs.length; i++) {
@@ -1248,55 +1298,6 @@
             { text: "10💎", gems: 10, coins: 0, chance: 0.60 },
             { text: "5💎",  gems: 5,  coins: 0, chance: 0.60 }
         ];
-
-        function buildWheelSVG(wheelId, prizes) {
-            const wheelContainer = document.getElementById(wheelId);
-            const total = prizes.length;
-            const angleStep = 360 / total;
-
-            let svgHTML = `<svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">`;
-            
-            prizes.forEach((prize, index) => {
-                const startAngle = index * angleStep;
-                const endAngle = (index + 1) * angleStep;
-                const fillColor = index % 2 === 0 ? 'rgba(30, 41, 59, 0.95)' : 'rgba(51, 65, 85, 0.95)';
-                
-                const radStart = Math.PI * (startAngle - 90) / 180;
-                const radEnd = Math.PI * (endAngle - 90) / 180;
-
-                const x1 = 50 + 50 * Math.cos(radStart);
-                const y1 = 50 + 50 * Math.sin(radStart);
-                const x2 = 50 + 50 * Math.cos(radEnd);
-                const y2 = 50 + 50 * Math.sin(radEnd);
-                const largeArcFlag = angleStep > 180 ? 1 : 0;
-
-                const pathData = `M 50 50 L ${x1} ${y1} A 50 50 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
-
-                svgHTML += `<path d="${pathData}" fill="${fillColor}" stroke="rgba(255, 255, 255, 0.15)" stroke-width="0.8"/>`;
-
-                const midAngle = startAngle + angleStep / 2;
-                const radMid = Math.PI * (midAngle - 90) / 180;
-                const textRadius = 32;
-                const textX = 50 + textRadius * Math.cos(radMid);
-                const textY = 50 + textRadius * Math.sin(radMid);
-
-                let textAngle = midAngle;
-                if (textAngle > 90 && textAngle < 270) {
-                    textAngle += 180;
-                }
-
-                svgHTML += `<text x="${textX}" y="${textY}" fill="#ffffff" font-size="6" font-weight="900" text-anchor="middle" dominant-baseline="middle" transform="rotate(${textAngle}, ${textX}, ${textY})" stroke="#000" stroke-width="0.3">${prize.text}</text>`;
-            });
-
-            svgHTML += `</svg>`;
-            const centerIcon = wheelId === 'wheelCoin' ? '🪙' : '💎';
-            wheelContainer.innerHTML = `<div class="wheel-center">${centerIcon}</div>` + svgHTML;
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            buildWheelSVG('wheelCoin', coinRoulettePrizes);
-            buildWheelSVG('wheelGem', gemRoulettePrizes);
-        });
 
         function getWeightedRandomIndex(prizes) {
             const totalWeight = prizes.reduce((sum, item) => sum + item.chance, 0);

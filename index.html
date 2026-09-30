@@ -708,20 +708,10 @@
             console.log("Telegram WebApp не ініціалізовано");
         }
 
-        // --- ВЕРСІЯ ГРИ ТА СКИНУТНЯ ПРОГРЕСУ ДЛЯ ВСІХ ГРАВЦІВ ---
-        const CURRENT_GAME_VERSION = "2.1"; 
-        const savedVersion = localStorage.getItem('tabcoin_version');
-
-        if (savedVersion !== CURRENT_GAME_VERSION) {
-            localStorage.clear();
-            localStorage.setItem('tabcoin_version', CURRENT_GAME_VERSION);
-        }
-
         let score = Number(localStorage.getItem('tabcoin_score')) || 0;
         let gems = Number(localStorage.getItem('tabcoin_gems')) || 0;
         let maxEnergy = Number(localStorage.getItem('tabcoin_maxEnergy')) || 1000;
         
-        // Виправлення енергії для нових гравців (щоб не була 0)
         let savedEnergy = localStorage.getItem('tabcoin_energy');
         let energy = savedEnergy !== null ? Number(savedEnergy) : maxEnergy;
         
@@ -733,7 +723,6 @@
         let regenLevel = Number(localStorage.getItem('tabcoin_regenLevel')) || 0;
         let passiveLevel = Number(localStorage.getItem('tabcoin_passiveLevel')) || 0;
 
-        // Рівні швидкості відновлення енергії (одиниць за секунду)
         const energyRegenRates = [3, 6, 10, 15, 25];
         const regenPrices = [1000, 3000, 8000, 15000];
 
@@ -840,7 +829,6 @@
             buyMulticlickBtn.textContent = `Купити (${getBoostPrice(multiclickLevel)} 🪙)`;
             buyMaxenergyBtn.textContent = `Купити (${getBoostPrice(maxenergyLevel)} 🪙)`;
 
-            // Оновлення блоку прокачування регенерації енергії
             if (regenLevel < regenPrices.length) {
                 regenInfo.textContent = `Відновлення: +${currentRegenRate}/сек`;
                 buyRegenBtn.textContent = `Купити (${regenPrices[regenLevel].toLocaleString()} 🪙)`;

@@ -286,12 +286,32 @@
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
             border-radius: 14px;
-            padding: 12px 16px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             backdrop-filter: blur(12px);
-            gap: 8px;
+            gap: 10px;
+        }
+
+        /* Стилі для іконки бізнесу */
+        .biz-icon-wrapper {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 1px solid var(--panel-border);
+        }
+
+        .biz-icon {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
         }
 
         .item-info {
@@ -299,20 +319,20 @@
         }
 
         .item-info h4 {
-            font-size: 14px;
-            margin-bottom: 3px;
+            font-size: 13px;
+            margin-bottom: 2px;
             color: var(--text-white);
         }
 
         .item-info p {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-secondary);
         }
 
         .item-actions {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             align-items: flex-end;
         }
 
@@ -320,10 +340,10 @@
             background: var(--accent-gold-gradient);
             color: #1e1b4b;
             border: none;
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 6px 10px;
+            border-radius: 8px;
             font-weight: 700;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
             transition: opacity 0.2s;
             white-space: nowrap;
@@ -539,12 +559,15 @@
         </div>
     </div>
 
-    <!-- Нова вкладка Бізнесів -->
+    <!-- Вкладка Бізнесів із власними картинками -->
     <div class="tab-content" id="tab-biz">
         <div class="section-title">Ваші Бізнеси</div>
         <div class="items-list">
             <!-- Бізнес 1: Ферма -->
             <div class="item-card">
+                <div class="biz-icon-wrapper">
+                    <img src="png-transparent-paper-barn-farm-live-architectural-engineering-barn-angle-ribbon-building.png" alt="Ферма" class="biz-icon">
+                </div>
                 <div class="item-info">
                     <h4 id="biz0Name">Ферма (Рівень 0)</h4>
                     <p id="biz0Info">Дохід: 0 🪙/год | Каса: 0 🪙</p>
@@ -554,10 +577,13 @@
                     <button class="item-btn secondary-btn" id="biz0ClaimBtn" onclick="claimBusiness(0)">Зняти</button>
                 </div>
             </div>
-            <!-- Бізнес 2: Продуктовий магазин -->
+            <!-- Бізнес 2: Супермаркет -->
             <div class="item-card">
+                <div class="biz-icon-wrapper">
+                    <img src="pngtree-supermarket-clipart-cartoon-grocery-store-with-fruits-and-vegetables-vector-png-image_6825233.png" alt="Супермаркет" class="biz-icon">
+                </div>
                 <div class="item-info">
-                    <h4 id="biz1Name">Продуктовий магазин (Рівень 0)</h4>
+                    <h4 id="biz1Name">Супермаркет (Рівень 0)</h4>
                     <p id="biz1Info">Дохід: 0 🪙/год | Каса: 0 🪙</p>
                 </div>
                 <div class="item-actions">
@@ -567,6 +593,9 @@
             </div>
             <!-- Бізнес 3: Автомийка -->
             <div class="item-card">
+                <div class="biz-icon-wrapper">
+                    <img src="depositphotos_9136118-stock-illustration-car-wash.png" alt="Автомийка" class="biz-icon">
+                </div>
                 <div class="item-info">
                     <h4 id="biz2Name">Автомийка (Рівень 0)</h4>
                     <p id="biz2Info">Дохід: 0 🪙/год | Каса: 0 🪙</p>
@@ -779,10 +808,10 @@
         let maxenergyLevel = Number(localStorage.getItem('tabcoin_energyLevel')) || 0;
         let regenLevel = Number(localStorage.getItem('tabcoin_regenLevel')) || 0;
 
-        // Конфігурація бізнесів (3 бізнеси, по 5 рівнів)
+        // Конфігурація бізнесів
         const businessConfigs = [
             { name: "Ферма", incomes: [0, 500, 1200, 2500, 5000, 10000], costs: [0, 20000, 60000, 150000, 400000] },
-            { name: "Продуктовий магазин", incomes: [0, 800, 1800, 3500, 7000, 15000], costs: [0, 35000, 90000, 220000, 600000] },
+            { name: "Супермаркет", incomes: [0, 800, 1800, 3500, 7000, 15000], costs: [0, 35000, 90000, 220000, 600000] },
             { name: "Автомийка", incomes: [0, 1500, 3500, 7000, 14000, 30000], costs: [0, 70000, 180000, 450000, 1200000] }
         ];
 
@@ -885,7 +914,6 @@
             scoreElement.textContent = Math.floor(score);
             gemsElement.textContent = gems;
             
-            // Загальний годинний дохід з усіх бізнесів
             let totalHourlyIncome = 0;
             for(let i = 0; i < businessConfigs.length; i++) {
                 let lvl = bizLevels[i];
@@ -914,7 +942,6 @@
                 buyRegenBtn.disabled = true;
             }
 
-            // Оновлення блоків бізнесів в інтерфейсі
             for(let i = 0; i < businessConfigs.length; i++) {
                 let lvl = bizLevels[i];
                 let nameEl = document.getElementById(`biz${i}Name`);
@@ -958,7 +985,6 @@
             }
         }
 
-        // Функції для купівлі та збору з бізнесів
         function upgradeBusiness(index) {
             let currentLvl = bizLevels[index];
             if (currentLvl >= 5) return;
@@ -1071,13 +1097,11 @@
             saveGame();
         });
 
-        // Інтервал кожну секунду (відновлення енергії + додавання прибутку бізнесів у касу)
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy = Math.min(maxEnergy, energy + currentRegenRate);
             }
             
-            // Нарахування коштів у касу бізнесів щосекунди (годинний дохід ділимо на 3600)
             for (let i = 0; i < businessConfigs.length; i++) {
                 let lvl = bizLevels[i];
                 if (lvl > 0) {
